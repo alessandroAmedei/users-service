@@ -29,7 +29,7 @@
              - POSTGRES_PASSWORD=postgres
 
         app:
-            image: 'alessandroamedei/user-service-florence:1'
+            image: 'alessandroamedei/users-service:1'
             container_name: 'users-service'
             environment:
              - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://db:5432/postgres
