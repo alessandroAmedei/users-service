@@ -1,6 +1,5 @@
 package it.amedei.validator;/*
 @author Alessandro Amedei
-Net Studio S.p.A
 2022    
 */
 

@@ -1,6 +1,5 @@
 package it.amedei.exception;/*
 @author Alessandro Amedei
-Net Studio S.p.A
 2022    
 */
 
