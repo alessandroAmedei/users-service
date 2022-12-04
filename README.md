@@ -1,4 +1,4 @@
-### Run docker postgres:latest container 
+### Run docker postgres:latest container
     docker run -p 5433:5432 --name users-postgres -d -e POSTGRES_PASSWORD=postgres postgres
 
 ### Swagger Open API address
@@ -6,21 +6,43 @@
 
 ### Docker build image jvm
     mvn clean package
-    docker build -f ./src/main/docker/Dockerfile.jvm -t user-service-florence .
+    docker build -f ./src/main/docker/Dockerfile.jvm -t alessandroamedei/users-service:TAG .
+
+### Push update to docker up (after docker login)
+    docker push alessandroamedei/users-service:TAG
 
 ### Run image
-    docker run -p 7001:7001 -d -e QUARKUS_DATASOURCE_JDBC_URL jdbc:postgresql://host.docker.internal:5433/postgres user-service-florence
+    docker run -p 7001:7001 --name users-service -d -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://host.docker.internal:5433/postgres alessandroamedei/users-service:TAG
 
+### Use docker compose
+
+    version: '2'
+
+    services:
+        db:
+            image: 'postgres'
+            container_name: 'users-db'
+            environment:
+             - POSTGRES_PASSWORD=postgres
+
+        app:
+            image: 'alessandroamedei/user-service-florence:1'
+            container_name: 'users-service'
+            environment:
+             - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://db:5432/postgres
+            depends_on:
+             - db
+            ports:
+             - "7001:7001"
 
 # users-service Project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
-
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
+
 ```shell script
 ./mvnw compile quarkus:dev
 ```
@@ -30,15 +52,18 @@ You can run your application in dev mode that enables live coding using:
 ## Packaging and running the application
 
 The application can be packaged using:
+
 ```shell script
 ./mvnw package
 ```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+
+It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory. Be aware that it’s not an _über-jar_ as
+the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
 The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
 If you want to build an _über-jar_, execute the following command:
+
 ```shell script
 ./mvnw package -Dquarkus.package.type=uber-jar
 ```
@@ -47,12 +72,14 @@ The application, packaged as an _über-jar_, is now runnable using `java -jar ta
 
 ## Creating a native executable
 
-You can create a native executable using: 
+You can create a native executable using:
+
 ```shell script
 ./mvnw package -Pnative
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+
 ```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 ```
@@ -63,7 +90,8 @@ If you want to learn more about building native executables, please consult http
 
 ## Related Guides
 
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and JPA
+- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and
+  JPA
 - JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
 
 ## Provided Code
