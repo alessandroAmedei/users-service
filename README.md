@@ -1,21 +1,26 @@
+### JAX-RS Quarkus App by Alessandro Amedei
+
 ### Run docker postgres:latest container
     docker run -p 5433:5432 --name users-postgres -d -e POSTGRES_PASSWORD=postgres postgres
 
+### Run docker app container
+    docker run -p 7001:7001 --name users-service -d -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://host.docker.internal:5433/postgres alessandroamedei/users-service:TAG
+
 ### Swagger Open API address
     http://127.0.0.1:7001/swagger/
+
+### Run tests
+    mvn test
 
 ### Docker build image jvm
     mvn clean package
     docker build -f ./src/main/docker/Dockerfile.jvm -t alessandroamedei/users-service:TAG .
 
-### Push update to docker up (after docker login)
+### Push update to hub.docker.com (after docker login)
     docker push alessandroamedei/users-service:TAG
 
 ### hub.docker.com image repo
     https://hub.docker.com/repository/docker/alessandroamedei/users-service
-
-### Run image
-    docker run -p 7001:7001 --name users-service -d -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://host.docker.internal:5433/postgres alessandroamedei/users-service:TAG
 
 ### Use docker compose
 
